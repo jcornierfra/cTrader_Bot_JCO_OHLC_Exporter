@@ -21,6 +21,8 @@
 //    Changelog:
 //    - v1.0: Initial release
 //
+//    GitHub: https://github.com/jcornierfra/cTrader_Bot_JCO_OHLC_Exporter
+//
 // -------------------------------------------------------------------------------------------------
 
 using System;
