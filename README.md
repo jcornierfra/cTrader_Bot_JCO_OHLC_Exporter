@@ -9,26 +9,36 @@ A cTrader cBot that exports historical OHLC candlestick data to a CSV file for a
 - Automatic lazy-loading of historical bars to cover the full requested period
 - Flexible output path: relative (saves next to the robot) or absolute
 - UTC-based date handling
+- Configurable column delimiter, with an optional French decimal-comma mode for Excel
+- Price precision auto-detected from the **exported** symbol (5 decimals for EURUSD,
+  3 for USDJPY, 2 for indices…), or forced manually
 
 ## Parameters
 
-| Parameter    | Default             | Description                                                                 |
-|--------------|---------------------|-----------------------------------------------------------------------------|
-| Start Date   | `2024-01-01`        | Start of the export period (UTC, format `YYYY-MM-DD`)                       |
-| End Date     | `2024-12-31`        | End of the export period (UTC, format `YYYY-MM-DD`)                         |
-| TimeFrame    | `Hour`              | Timeframe of the candles to export (e.g. `Minute`, `Hour`, `Daily`)         |
-| Symbol       | `US100.cash`        | Symbol to export (must be available in your cTrader broker)                 |
-| Output Path  | `ohlc_export.csv`   | Output file path. If relative, saves next to the robot's compiled assembly  |
+| Parameter             | Default             | Description                                                                                      |
+|-----------------------|---------------------|--------------------------------------------------------------------------------------------------|
+| Start Date            | `2024-01-01`        | Start of the export period (UTC, format `YYYY-MM-DD`)                                            |
+| End Date              | `2024-12-31`        | End of the export period (UTC, format `YYYY-MM-DD`)                                              |
+| TimeFrame             | `Hour`              | Timeframe of the candles to export (e.g. `Minute`, `Hour`, `Daily`)                              |
+| Symbol                | `US100.cash`        | Symbol to export (must be available in your cTrader broker)                                      |
+| Output Path           | `ohlc_export.csv`   | Output file path. If relative, saves next to the robot's compiled assembly                       |
+| Column Delimiter      | `;`                 | Column separator. `;` opens directly in French Excel and never clashes with a decimal point      |
+| Decimal Comma (FR)    | `false`             | `false`: prices as `1.09345` (machine standard). `true`: `1,09345` — requires a `;` delimiter    |
+| Price Digits (0=auto) | `0`                 | Number of decimals for prices. `0` = taken from the exported symbol. Set 1–8 to force a value    |
+
+> The robot refuses to run if `Decimal Comma (FR)` is enabled while the delimiter is `,`,
+> since the resulting file would be unparsable.
 
 ## Output Format
 
 The CSV file contains one row per candle with the following columns:
 
-```
-DateTime,Open,High,Low,Close,Volume
+```text
+DateTime;Open;High;Low;Close;Volume
 ```
 
-All timestamps are in UTC.
+Timestamps are always written in UTC as `yyyy-MM-dd HH:mm:ss`, independent of the
+delimiter and decimal settings.
 
 ### Sample Output
 
@@ -40,7 +50,8 @@ All timestamps are in UTC.
 | 2024-01-02 03:00:00 | 16820.7 | 16825.3 | 16814.6 | 16819.7 | 3006   |
 | 2024-01-02 04:00:00 | 16819.8 | 16825.4 | 16815.8 | 16820.2 | 2346   |
 
-> See [ohlc_export_sample.csv](JCO%20OHLC%20Exporter/ohlc_export_sample.csv) for a full sample file.
+> See [ohlc_export_sample.csv](JCO%20OHLC%20Exporter/ohlc_export_sample.csv) for a full sample file
+> (produced with v1.0, hence comma-separated).
 
 ## Usage
 
@@ -50,6 +61,19 @@ All timestamps are in UTC.
 4. Retrieve the CSV from the configured output path
 
 > **Note:** The output directory must exist before running the robot. cTrader will not create it automatically.
+>
+> **Note:** The chart the robot is attached to has no effect on the export — everything
+> (data and price precision) comes from the `Symbol` parameter.
+
+## Changelog
+
+- **v1.2** — `Price Digits = auto` now reads the precision of the *exported* symbol
+  instead of the chart symbol the robot is attached to (exporting EURUSD from a US100
+  chart used to truncate prices to 2 decimals).
+- **v1.1** — Prices written with a decimal **point** (InvariantCulture) and a configurable
+  column delimiter (default `;`), fixing the collision between decimal commas and comma
+  separators. Optional French decimal-comma mode.
+- **v1.0** — Initial release.
 
 ## Requirements
 
@@ -58,4 +82,4 @@ All timestamps are in UTC.
 
 ## Author
 
-J. Cornier — v1.0 — 2026-04-05
+J. Cornier — v1.2 — 2026-08-12
