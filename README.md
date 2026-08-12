@@ -75,6 +75,18 @@ delimiter and decimal settings.
   separators. Optional French decimal-comma mode.
 - **v1.0** — Initial release.
 
+## Building from Source
+
+The repository also ships a standard .NET project, so the cBot can be built outside
+cTrader (useful for IDE support in VS Code / Rider, or for CI):
+
+```bash
+dotnet build "JCO OHLC Exporter.sln"
+```
+
+This produces `JCO OHLC Exporter.algo`, which can be imported into cTrader directly.
+The `cTrader.Automate` package version is pinned in the `.csproj` for reproducible builds.
+
 ## Requirements
 
 - cTrader 4.x or later

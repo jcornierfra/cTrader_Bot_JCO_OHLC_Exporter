@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Version épinglée pour une build reproductible. cTrader accepte les versions
+         supérieures : relever ce numéro si une nouvelle API est nécessaire. -->
+    <PackageReference Include="cTrader.Automate" Version="1.0.19" />
+  </ItemGroup>
+</Project>
